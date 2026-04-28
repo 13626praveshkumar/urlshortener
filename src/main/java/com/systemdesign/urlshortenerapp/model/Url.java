@@ -15,16 +15,28 @@ public class Url {
     private long id;
     @Lob
     private String originalUrl;
-    private String shortUrl;
+    private String shortLink;
     private LocalDateTime createdDate;
     private LocalDateTime expirationDateTime;
 
     public Url(long id, String originalUrl, String shortUrl, LocalDateTime createdDate, LocalDateTime expirationDateTime) {
         this.id = id;
         this.originalUrl = originalUrl;
-        this.shortUrl = shortUrl;
+        this.shortLink = shortUrl;
         this.createdDate = createdDate;
         this.expirationDateTime = expirationDateTime;
+    }
+
+    public Url() {
+
+    }
+
+    public String getShortLink() {
+        return shortLink;
+    }
+
+    public void setShortLink(String shortLink) {
+        this.shortLink = shortLink;
     }
 
     public long getId() {
@@ -43,13 +55,6 @@ public class Url {
         this.originalUrl = originalUrl;
     }
 
-    public String getShortUrl() {
-        return shortUrl;
-    }
-
-    public void setShortUrl(String shortUrl) {
-        this.shortUrl = shortUrl;
-    }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
@@ -72,7 +77,7 @@ public class Url {
         return "Url{" +
                 "id=" + id +
                 ", originalUrl='" + originalUrl + '\'' +
-                ", shortUrl='" + shortUrl + '\'' +
+                ", shortUrl='" + shortLink + '\'' +
                 ", createdDate=" + createdDate +
                 ", expirationDateTime=" + expirationDateTime +
                 '}';
