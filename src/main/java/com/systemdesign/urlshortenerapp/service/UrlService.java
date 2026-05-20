@@ -6,7 +6,7 @@ import com.systemdesign.urlshortenerapp.model.UrlDto;
 public interface UrlService {
     public Url generateShortUrl(UrlDto urlDto);
     public Url persistShortUrl(Url url);
-    public Url getEncodedUrl(String url);
+    public String getEncodedUrl(String url);
     public void deleteShortUrl(Url url);
 
   }

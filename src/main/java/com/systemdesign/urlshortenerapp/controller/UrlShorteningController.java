@@ -48,7 +48,7 @@ public class UrlShorteningController {
             urlErrorResponseDto.setError("InvalidUrl");
             return new ResponseEntity<UrlErrorResponseDto>(urlErrorResponseDto, HttpStatus.OK);
         }
-        Url urlToRet=urlService.getEncodedUrl(shortLink);
+        String urlToRet=urlService.getEncodedUrl(shortLink);
         if(urlToRet==null)
         {
             UrlErrorResponseDto urlErrorResponseDto=new UrlErrorResponseDto();
@@ -57,7 +57,7 @@ public class UrlShorteningController {
             return new ResponseEntity<UrlErrorResponseDto>(urlErrorResponseDto, HttpStatus.OK);
         }
        response.sendRedirect(
-               urlToRet.getOriginalUrl()
+               urlToRet
        );
         return null;
     }

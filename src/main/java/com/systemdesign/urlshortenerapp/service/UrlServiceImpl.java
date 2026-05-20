@@ -6,16 +6,23 @@ import com.systemdesign.urlshortenerapp.model.UrlDto;
 import com.systemdesign.urlshortenerapp.repository.UrlRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Component
 public class UrlServiceImpl implements UrlService{
 
     @Autowired
    private UrlRepository urlRepository;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public Url generateShortUrl(UrlDto urlDto) {
@@ -62,9 +69,47 @@ public class UrlServiceImpl implements UrlService{
     }
 
     @Override
-    public Url getEncodedUrl(String url) {
-        Url urlToRet=urlRepository.findByShortLink(url);
-        return urlToRet;
+   // @Cacheable(value = "short-url", key = "#url")
+    public String getEncodedUrl(String shortUrl) {
+        String redisKey = "url:" + shortUrl;
+
+        // 1. Redis lookup
+        String cachedUrl =
+                redisTemplate.opsForValue().get(redisKey);
+
+        if (cachedUrl != null) {
+
+            System.out.println("Returned from Redis");
+
+            return cachedUrl;
+        }
+
+        // 2. DB lookup
+        System.out.println("Fetching from DB");
+
+        Url url =
+                urlRepository.findByShortLink(shortUrl);
+
+        if (url == null) {
+            return null;
+        }
+
+        // 3. Dynamic TTL
+//        Duration ttl = Duration.between(
+//                LocalDateTime.now(),
+//                url.getExpirationDateTime()
+//        );
+
+        // 4. Store in Redis
+        redisTemplate.opsForValue().set(
+                redisKey,
+                url.getOriginalUrl(),
+                Duration.ofSeconds(20)
+        );
+
+        return url.getOriginalUrl();
+
+        // return urlRepository.findByShortLink(url);
 
     }
 

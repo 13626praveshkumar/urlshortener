@@ -5,10 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-public class Url {
+public class Url implements Serializable {
 
     @Id
     @GeneratedValue
